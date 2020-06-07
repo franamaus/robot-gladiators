@@ -10,6 +10,11 @@ var enemyNames = ["Roborto", "Amy Android", "Robo Trumble"];
 var enemyHealth = 50;
 var enemyAttack = 12;
 
+var randomNumber = function(min, max) {
+    var value = Math.floor(Math.random() * (max - min + 1) + min);
+    return value;
+};
+
 var fight = function(enemyNames) {
     while (enemyHealth  > 0 && playerHealth > 0)  {
         // ask user if they'd liked to fight or run
@@ -24,16 +29,18 @@ var fight = function(enemyNames) {
             var confirmSkip = window.confirm("Are you sure you'd like to quit?");
             //if yes, leave fight
             if (confirmSkip) {
-                window.alert (playerName + " has decided to skip this fight. Goodbye. ")
+                window.alert (playerName + " has decided to skip this fight. Goodbye. ");
                 // subtract money from playerMoney for skipping
-                playerMoney = playerMoney - 10;
+                playerMoney = Math.max(0, playerMoney - 10);
                 console.log(playerName + " now has " + playerMoney + " coins remaining. ");
                 break;
-            }
-        }
+            };
+        };
 
-        //Subtract the value of `playerAttack` from the value of `enemyHealth` and use that result to update the value in the `enemyHealth` variable
-        enemyHealth = enemyHealth - playerAttack;
+        // generate random damage value based on player's attack power
+        var damage = randomNumber(playerAttack - 3, playerAttack);
+        enemyHealth = Math.max(0, enemyHealth - damage);
+        
         // Log a resulting message to the console so we know that it worked.
         console.log(
             playerName + " attacked " + enemyNames + ". " + enemyNames + " now has " + enemyHealth + " health remaining."
@@ -50,10 +57,11 @@ var fight = function(enemyNames) {
             break;
         } else {
             window.alert(enemyNames + " still has " + enemyHealth + " health left.");
-            }
+            };
 
-        // Subtract the value of `enemyAttack` from the value of `playerHealth` and use that result to update the value in the `playerHealth` variable
-        playerHealth = playerHealth - enemyAttack;
+            var damage = randomNumber(enemyAttack - 3, enemyAttack);
+            playerHealth = Math.max(0, playerHealth - damage);
+
             // Log a resulting message to the console so we know that it worked.
             console.log(
                 enemyNames + " attacked " + playerName + ". " + playerName + " now has " + playerHealth + " health remaining."
@@ -79,12 +87,12 @@ var startGame = function () {
             window.alert("Welcome to Robot Gladiators! Round " + ( i + 1 ));
         // call fight function with enemy robot
         var pickedEnemyName = enemyNames[i];
-        enemyHealth = 50;
+        enemyHealth = randomNumber(40, 60);
         fight(pickedEnemyName);
         }  else {
             window.alert("You have lost your robot in battle! Game Over!");
             break;
-        }
+        };
 
         // if we're not at the last enemy in the array
         if (playerHealth > 0 && i < enemyNames.length - 1) {
@@ -94,9 +102,9 @@ var startGame = function () {
             // if yes, take them to the store() function
             if (storeConfirm) {
               shop();
-            }  
-        }
-    }
+            };
+        };
+    };
     // play again
     endGame();
 };
@@ -108,7 +116,7 @@ var endGame = function() {
       window.alert("Great job, you've survived the game! You now have a score of " + playerMoney + ".");
     } else {
       window.alert("You've lost your robot in battle.");
-    }
+    };
 
     // ask player if they'd like to play again
     var playAgainConfirm = window.confirm("Would you like to play again?");
@@ -118,8 +126,8 @@ var endGame = function() {
       startGame();
     } else {
       window.alert("Thank you for playing Robot Gladiators! Come back soon!");
-    }
-}
+    };
+};
 
 var shop = function() {
     // ask player what they'd like to do
@@ -128,7 +136,8 @@ var shop = function() {
     );
     // use switch to carry out action
     switch (shopOptionPrompt) {
-        case "REFILL": // new case
+        // new case
+        case "REFILL": 
         case "refill":
             if (playerMoney >= 7) {
               window.alert("Refilling player's health by 20 for 7 dollars.");
@@ -136,13 +145,13 @@ var shop = function() {
               // increase health and decrease money
               playerHealth = playerHealth + 20;
               playerMoney = playerMoney - 7;
-            }
-            else {
+            } else {
               window.alert("You don't have enough money!");
-            }
-        break;
+            };
+            break;
         
-        case "UPGRADE": // new case
+        // new case
+        case "UPGRADE": 
         case "upgrade":
             if (playerMoney >= 7) {
               window.alert("Upgrading player's attack by 6 for 7 dollars.");
@@ -150,26 +159,27 @@ var shop = function() {
              // increase attack and decrease money
               playerAttack = playerAttack + 6;
               playerMoney = playerMoney - 7;
-            }
-            else {
+            } else {
               window.alert("You don't have enough money!");
             }
-        break;
-        
+            break;
+
+        // new case
         case "LEAVE": // new case
         case "leave":
-        window.alert("Leaving the store.");
-        // do nothing, so function will end
-        break;
+            window.alert("Leaving the store.");
+            // do nothing, so function will end
+            break;
+            
+            default:
+            window.alert("You did not pick a valid option. Try again.");
         
-        default:
-        window.alert("You did not pick a valid option. Try again.");
-    
-        // call shop() again to force player to pick a valid option
-        shop();
-        break;
-    }
+            // call shop() again to force player to pick a valid option
+            shop();
+            break;
+    };
 }; 
 
 // start the game when the page loads
 startGame();
+
